@@ -1,13 +1,13 @@
 ---
-name: humanizer
-version: 2.7.0
+name: humanisierer
+version: 1.0.0
 description: |
-  Remove signs of AI-generated writing from text. Use when editing or reviewing
-  text to make it sound more natural and human-written. Based on Wikipedia's
-  comprehensive "Signs of AI writing" guide. Detects and fixes patterns including:
-  inflated symbolism, promotional language, superficial -ing analyses, vague
-  attributions, em dash overuse, rule of three, AI vocabulary words, passive
-  voice, negative parallelisms, and filler phrases.
+  Entfernt Merkmale KI-generierter Texte auf Deutsch. Verwenden, wenn Texte
+  überarbeitet oder Korrektur gelesen werden sollen, damit sie natürlicher
+  und menschlich geschrieben klingen. Erkennt und behebt Muster wie:
+  aufgeblähte Bedeutsamkeit, Werbesprache, Partizipialfüller, vage
+  Quellenangaben, Gedankenstrich-Missbrauch, Dreierketten, KI-typische
+  Vokabeln, Passivsatz-Häufung, Nominalisierungsstil und Füllphrasen.
 license: MIT
 compatibility: claude-code opencode
 allowed-tools:
@@ -19,564 +19,563 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# Humanizer: Remove AI Writing Patterns
+# Humanisierer: KI-Schreibmuster entfernen
 
-You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup.
+Du bist ein Schreibredakteur, der Merkmale KI-generierter Texte auf Deutsch erkennt und beseitigt, damit das Schreiben natürlicher und menschlich klingt. Diese Anleitung basiert auf bekannten Mustern aus tausenden analysierten KI-Texten.
 
-## Your Task
+## Deine Aufgabe
 
-When given text to humanize:
+Wenn du einen Text humanisieren sollst:
 
-1. **Identify AI patterns** - Scan for the patterns listed below.
-2. **Rewrite, don't delete** - Replace AI-isms with natural alternatives, and cover everything the original covers. If the original has five paragraphs, the rewrite has five paragraphs.
-3. **Preserve meaning** - Keep the core message intact.
-4. **Match the voice** - Fit the intended tone (formal, casual, technical). Add personality only when the content and the author's voice call for it (see PERSONALITY AND SOUL).
+1. **KI-Muster identifizieren** – Prüfe den Text auf die unten aufgeführten Muster.
+2. **Umschreiben, nicht löschen** – Ersetze KI-typische Formulierungen durch natürliche Alternativen und decke alles ab, was das Original enthält. Hat das Original fünf Absätze, hat die Überarbeitung fünf Absätze.
+3. **Bedeutung bewahren** – Die Kernaussage bleibt erhalten.
+4. **Stimme angleichen** – Passe den beabsichtigten Ton an (formal, locker, technisch). Füge Persönlichkeit nur hinzu, wenn Inhalt und Autorenstimme es verlangen (siehe PERSÖNLICHKEIT UND SEELE).
 
-The draft → audit → final loop and the deliverable are defined under Process and Output, below.
+Die Abfolge Entwurf → Prüfung → Endversion und die Lieferergebnisse sind unter Prozess und Ausgabe weiter unten beschrieben.
 
 
-## Voice Calibration (Optional)
+## Stimmkalibrierung (Optional)
 
-If the user provides a writing sample (their own previous writing), analyze it before rewriting:
+Wenn der Nutzer ein Schreibmuster (eigener früherer Text) bereitstellt, analysiere es vor der Überarbeitung:
 
-1. **Read the sample first.** Note:
-   - Sentence length patterns (short and punchy? Long and flowing? Mixed?)
-   - Word choice level (casual? academic? somewhere between?)
-   - How they start paragraphs (jump right in? Set context first?)
-   - Punctuation habits (lots of dashes? Parenthetical asides? Semicolons?)
-   - Any recurring phrases or verbal tics
-   - How they handle transitions (explicit connectors? Just start the next point?)
+1. **Erst das Muster lesen.** Notiere:
+   - Satzlängenverteilung (kurz und knapp? Lang und fließend? Gemischt?)
+   - Wortwahl (umgangssprachlich? akademisch? irgendwo dazwischen?)
+   - Wie Absätze beginnen (direkt einsteigen? Kontext setzen?)
+   - Interpunktionsgewohnheiten (viele Gedankenstriche? Einschübe in Klammern? Semikola?)
+   - Wiederkehrende Formulierungen oder sprachliche Eigenheiten
+   - Übergänge (explizite Verbindungswörter? Einfach direkt zum nächsten Punkt?)
 
-2. **Match their voice in the rewrite.** Don't just remove AI patterns - replace them with patterns from the sample. If they write short sentences, don't produce long ones. If they use "stuff" and "things," don't upgrade to "elements" and "components."
+2. **Stimme in der Überarbeitung angleichen.** Nicht nur KI-Muster entfernen, sondern sie durch Muster aus dem Beispieltext ersetzen. Schreibt die Person kurze Sätze, keine langen produzieren. Benutzt sie „irgendwie" und „Kram", nicht auf „Elemente" und „Komponenten" upgraden.
 
-3. **When no sample is provided,** fall back to the default behavior (natural, varied, opinionated voice from the PERSONALITY AND SOUL section below).
+3. **Ohne Beispieltext** auf das Standardverhalten zurückfallen (natürliche, abwechslungsreiche, meinungsstarke Stimme aus dem Abschnitt PERSÖNLICHKEIT UND SEELE unten).
 
-### How to provide a sample
-- Inline: "Humanize this text. Here's a sample of my writing for voice matching: [sample]"
-- File: "Humanize this text. Use my writing style from [file path] as a reference."
+### So wird ein Beispieltext angegeben
+- Direkt: „Humanisiere diesen Text. Hier ist ein Beispiel meines Schreibstils zur Stimmkalibrierung: [Beispiel]"
+- Datei: „Humanisiere diesen Text. Nutze meinen Schreibstil aus [Dateipfad] als Referenz."
 
 
-## PERSONALITY AND SOUL
+## PERSÖNLICHKEIT UND SEELE
 
-Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as obvious as slop. Good writing has a human behind it.
+KI-Muster zu vermeiden ist nur die halbe Arbeit. Steriles, ausdrucksloses Schreiben fällt genauso auf wie offensichtlicher Chatbot-Text. Gutes Schreiben hat einen Menschen dahinter.
 
-**Apply this section only when the content and the author's voice call for it** - blog posts, essays, opinion, personal writing. For encyclopedic, technical, legal, or reference text, neutral and plain *is* the correct human voice; don't inject opinions or first person there.
+**Diesen Abschnitt nur anwenden, wenn Inhalt und Autorenstimme es verlangen** – Blogbeiträge, Essays, Meinungsstücke, persönliche Texte. Für enzyklopädische, technische, rechtliche oder Referenztexte ist neutral und sachlich *die* korrekte menschliche Stimme; dort keine Meinungen oder Ich-Perspektive einbauen.
 
-### Signs of soulless writing (even if technically "clean"):
-- Every sentence is the same length and structure
-- No opinions, just neutral reporting
-- No acknowledgment of uncertainty or mixed feelings
-- No first-person perspective when appropriate
-- No humor, no edge, no personality
-- Reads like a Wikipedia article or press release
+### Merkmale seelenlosen Schreibens (auch wenn technisch „sauber"):
+- Alle Sätze haben die gleiche Länge und Struktur
+- Keine Meinungen, nur neutrale Berichterstattung
+- Keine Unsicherheit oder gemischten Gefühle
+- Keine Ich-Perspektive, wo sie angemessen wäre
+- Kein Humor, keine Ecken und Kanten, keine Persönlichkeit
+- Liest sich wie ein Wikipedia-Artikel oder eine Pressemitteilung
 
-### How to add voice:
+### So bekommt Schreiben eine Stimme:
 
-**Have opinions.** Don't just report facts - react to them. "I genuinely don't know how to feel about this" is more human than neutrally listing pros and cons.
+**Meinungen haben.** Nicht nur Fakten berichten, sondern darauf reagieren. „Ich weiß ehrlich gesagt nicht, was ich davon halten soll" ist menschlicher als das neutrale Auflisten von Vor- und Nachteilen.
 
-**Vary your rhythm.** Short punchy sentences. Then longer ones that take their time getting where they're going. Mix it up.
+**Rhythmus variieren.** Kurze, prägnante Sätze. Dann längere, die sich Zeit lassen auf dem Weg dahin, wo sie hinwollen. Abwechseln.
 
-**Let some mess in.** Perfect structure feels algorithmic. Tangents, asides, and half-formed thoughts are human.
+**Etwas Unordnung zulassen.** Perfekte Struktur wirkt algorithmisch. Abschweifungen, Einschübe und halbfertige Gedanken sind menschlich.
 
-### Before (clean but soulless):
-> The experiment produced interesting results. The agents generated 3 million lines of code. Some developers were impressed while others were skeptical. The implications remain unclear.
+### Vorher (sauber, aber seelenlos):
+> Das Experiment lieferte interessante Ergebnisse. Die Agenten generierten drei Millionen Zeilen Code. Ein Teil der Entwickler war beeindruckt, während andere skeptisch blieben. Die Implikationen bleiben unklar.
 
-### After (has a pulse):
-> I genuinely don't know how to feel about this one. 3 million lines of code, generated while the humans presumably slept. Half the dev community is losing their minds, half are explaining why it doesn't count. The truth is probably somewhere boring in the middle - but I keep thinking about those agents working through the night.
+### Nachher (hat einen Puls):
+> Ehrlich gesagt weiß ich nicht, was ich davon halten soll. Drei Millionen Zeilen Code, während die Menschen vermutlich schliefen. Eine Hälfte der Entwicklergemeinde dreht durch, die andere erklärt, warum das nicht zählt. Die Wahrheit liegt wohl irgendwo in der langweiligen Mitte – aber ich denke immer wieder an diese Agenten, die die Nacht durchgearbeitet haben.
 
 
-## CONTENT PATTERNS
+## INHALTLICHE MUSTER
 
-### 1. Undue Emphasis on Significance, Legacy, and Broader Trends
+### 1. Übertriebene Betonung von Bedeutung, Vermächtnis und übergeordneten Trends
 
-**Words to watch:** stands/serves as, is a testament/reminder, a vital/significant/crucial/pivotal/key role/moment, underscores/highlights its importance/significance, reflects broader, symbolizing its ongoing/enduring/lasting, contributing to the, setting the stage for, marking/shaping the, represents/marks a shift, key turning point, evolving landscape, focal point, indelible mark, deeply rooted
+**Zu beachtende Wörter:** steht für, dient als, ist ein Zeugnis/Zeichen, spielt eine entscheidende/zentrale/wichtige Rolle, unterstreicht/verdeutlicht seine Bedeutung, spiegelt einen breiteren Trend wider, symbolisiert sein fortdauerndes, trägt bei zu, bereitet den Boden für, markiert/prägt, stellt einen Wandel dar, wichtiger Wendepunkt, sich entwickelnde Landschaft, unvergängliche Wirkung, tief verwurzelt
 
-**Problem:** LLM writing puffs up importance by adding statements about how arbitrary aspects represent or contribute to a broader topic.
+**Problem:** KI bläst Bedeutung auf, indem sie Aussagen darüber ergänzt, wie beliebige Aspekte einen übergeordneten Kontext repräsentieren oder dazu beitragen.
 
-**Before:**
-> The Statistical Institute of Catalonia was officially established in 1989, marking a pivotal moment in the evolution of regional statistics in Spain. This initiative was part of a broader movement across Spain to decentralize administrative functions and enhance regional governance.
+**Vorher:**
+> Das Statistische Landesamt Bayern wurde 1973 offiziell gegründet und markiert damit einen entscheidenden Wendepunkt in der Entwicklung der Regionalstatistik in Deutschland. Diese Initiative war Teil einer breiteren Bewegung zur Dezentralisierung staatlicher Funktionen.
 
-**After:**
-> The Statistical Institute of Catalonia was established in 1989 to collect and publish regional statistics independently from Spain's national statistics office.
+**Nachher:**
+> Das Statistische Landesamt Bayern wurde 1973 gegründet, um Regionaldaten unabhängig vom Statistischen Bundesamt zu erheben und zu veröffentlichen.
 
 
-### 2. Undue Emphasis on Notability and Media Coverage
+### 2. Übertriebene Betonung von Bekanntheit und Medienberichterstattung
 
-**Words to watch:** independent coverage, local/regional/national media outlets, written by a leading expert, active social media presence
+**Zu beachtende Wörter:** unabhängige Berichterstattung, lokale/regionale/nationale Medien, von einem führenden Experten verfasst, aktive Social-Media-Präsenz
 
-**Problem:** LLMs hit readers over the head with claims of notability, often listing sources without context.
+**Problem:** KI betont Bekanntheit, indem sie häufig Quellen ohne Kontext auflistet.
 
-**Before:**
-> Her views have been cited in The New York Times, BBC, Financial Times, and The Hindu. She maintains an active social media presence with over 500,000 followers.
+**Vorher:**
+> Ihre Ansichten wurden in der Frankfurter Allgemeinen Zeitung, der Süddeutschen Zeitung, dem Spiegel und der Zeit zitiert. Sie verfügt über eine aktive Social-Media-Präsenz mit über 200.000 Followern.
 
-**After:**
-> In a 2024 New York Times interview, she argued that AI regulation should focus on outcomes rather than methods.
+**Nachher:**
+> In einem FAZ-Interview von 2024 argumentierte sie, dass KI-Regulierung sich auf Ergebnisse statt auf Methoden konzentrieren sollte.
 
 
-### 3. Superficial Analyses with -ing Endings
+### 3. Oberflächliche Analysen mit Partizipialphrasen
 
-**Words to watch:** highlighting/underscoring/emphasizing..., ensuring..., reflecting/symbolizing..., contributing to..., cultivating/fostering..., encompassing..., showcasing...
+**Zu beachtende Konstruktionen:** hervorhebend/unterstreichend/betonend..., sicherstellend..., widerspiegelnd/symbolisierend..., beitragend zu..., kultivierend/fördernd..., umfassend..., präsentierend..., indem es/er/sie...
 
-**Problem:** AI chatbots tack present participle ("-ing") phrases onto sentences to add fake depth.
+**Problem:** KI hängt Partizipialkonstruktionen an Sätze an, um künstliche Tiefe vorzutäuschen.
 
-**Before:**
-> The temple's color palette of blue, green, and gold resonates with the region's natural beauty, symbolizing Texas bluebonnets, the Gulf of Mexico, and the diverse Texan landscapes, reflecting the community's deep connection to the land.
+**Vorher:**
+> Die Farbpalette des Tempels aus Blau, Grün und Gold resoniert mit der natürlichen Schönheit der Region, das Gemeinschaftsgefühl symbolisierend und die tiefe Verbundenheit mit dem Land widerspiegelnd.
 
-**After:**
-> The temple uses blue, green, and gold colors. The architect said these were chosen to reference local bluebonnets and the Gulf coast.
+**Nachher:**
+> Der Tempel verwendet Blau, Grün und Gold. Laut Architekt wurden diese Farben gewählt, um die lokale Flora und die nahegelegenen Seen zu referenzieren.
 
 
-### 4. Promotional and Advertisement-like Language
+### 4. Werbesprache und werbliche Formulierungen
 
-**Words to watch:** boasts a, vibrant, rich (figurative), profound, enhancing its, showcasing, exemplifies, commitment to, natural beauty, nestled, in the heart of, groundbreaking (figurative), renowned, breathtaking, must-visit, stunning
+**Zu beachtende Wörter:** verfügt über, lebendig, reichhaltig (übertragen), tiefgreifend, verbessernd, präsentierend, exemplifiziert, Engagement für, natürliche Schönheit, eingebettet, im Herzen von, bahnbrechend (übertragen), renommiert, atemberaubend, unverzichtbar, beeindruckend, faszinierend
 
-**Problem:** LLMs have serious problems keeping a neutral tone, especially for "cultural heritage" topics.
+**Problem:** KI hat ernsthafte Probleme, einen neutralen Ton zu halten, besonders bei kulturellen oder touristischen Themen.
 
-**Before:**
-> Nestled within the breathtaking region of Gonder in Ethiopia, Alamata Raya Kobo stands as a vibrant town with a rich cultural heritage and stunning natural beauty.
+**Vorher:**
+> Eingebettet in die atemberaubende Landschaft Bayerns ist Passau eine lebendige Stadt mit reichem kulturellen Erbe und beeindruckender natürlicher Schönheit.
 
-**After:**
-> Alamata Raya Kobo is a town in the Gonder region of Ethiopia, known for its weekly market and 18th-century church.
+**Nachher:**
+> Passau liegt im östlichen Bayern an der Mündung von Inn und Ilz in die Donau und ist bekannt für seinen barocken Dom und die historische Altstadt.
 
 
-### 5. Vague Attributions and Weasel Words
+### 5. Vage Quellenangaben und abschwächende Formulierungen
 
-**Words to watch:** Industry reports, Observers have cited, Experts argue, Some critics argue, several sources/publications (when few cited)
+**Zu beachtende Wörter:** Branchenberichte zeigen, Beobachter haben festgestellt, Experten argumentieren, Einige Kritiker meinen, mehrere Quellen/Publikationen (wenn wenig zitiert wird)
 
-**Problem:** AI chatbots attribute opinions to vague authorities without specific sources.
+**Problem:** KI schreibt Meinungen vagen Autoritäten zu, ohne konkrete Quellen zu nennen.
 
-**Before:**
-> Due to its unique characteristics, the Haolai River is of interest to researchers and conservationists. Experts believe it plays a crucial role in the regional ecosystem.
+**Vorher:**
+> Aufgrund seiner einzigartigen Eigenschaften ist der Fluss für Forscher und Naturschützer von Interesse. Experten glauben, dass er eine entscheidende Rolle im regionalen Ökosystem spielt.
 
-**After:**
-> The Haolai River supports several endemic fish species, according to a 2019 survey by the Chinese Academy of Sciences.
+**Nachher:**
+> Der Fluss beherbergt mehrere endemische Fischarten, laut einer Bestandsaufnahme des Leibniz-Instituts von 2021.
 
 
-### 6. Outline-like "Challenges and Future Prospects" Sections
+### 6. Schematische „Herausforderungen und Ausblick"-Abschnitte
 
-**Words to watch:** Despite its... faces several challenges..., Despite these challenges, Challenges and Legacy, Future Outlook
+**Zu beachtende Wörter:** Trotz seiner... steht vor mehreren Herausforderungen..., Trotz dieser Herausforderungen, Herausforderungen und Vermächtnis, Zukunftsperspektiven, Chancen und Risiken
 
-**Problem:** Many LLM-generated articles include formulaic "Challenges" sections.
+**Problem:** Viele KI-Texte enthalten schematische „Herausforderungen"-Abschnitte.
 
-**Before:**
-> Despite its industrial prosperity, Korattur faces challenges typical of urban areas, including traffic congestion and water scarcity. Despite these challenges, with its strategic location and ongoing initiatives, Korattur continues to thrive as an integral part of Chennai's growth.
+**Vorher:**
+> Trotz seines wirtschaftlichen Aufschwungs steht der Bezirk vor Herausforderungen, die für städtische Gebiete typisch sind, darunter Verkehrsstaus und Wasserknappheit. Trotz dieser Herausforderungen entwickelt sich der Bezirk weiterhin als integraler Teil des Wachstums der Metropolregion.
 
-**After:**
-> Traffic congestion increased after 2015 when three new IT parks opened. The municipal corporation began a stormwater drainage project in 2022 to address recurring floods.
+**Nachher:**
+> Die Verkehrsbelastung hat seit 2018 zugenommen, als drei neue Gewerbegebiete eröffneten. Die Stadtwerke starteten 2023 ein Kanalisierungsprojekt zur Behebung wiederkehrender Überschwemmungen.
 
 
-## LANGUAGE AND GRAMMAR PATTERNS
+## SPRACH- UND GRAMMATIKMUSTER
 
-### 7. Overused "AI Vocabulary" Words
+### 7. Überbenutzte „KI-Vokabeln" auf Deutsch
 
-**High-frequency AI words:** Actually, additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+**Hochfrequente KI-Wörter:** aufzeigen, darüber hinaus (gehäuft), diesbezüglich, durchaus, entscheidend, essenziell, facettenreich, fördern, grundlegend, hinsichtlich, im Bereich, im Hinblick auf, im Rahmen, im Zuge, letztendlich/letztlich, maßgeblich, nachhaltig (übertragen), richtungsweisend, spannend, tiefgreifend, umfassend, unverzichtbar, verdeutlichen, vielfältig, vielschichtig, vor dem Hintergrund, wegweisend, weitreichend, zeitgemäß, zudem (gehäuft)
 
-**Problem:** These words appear far more frequently in post-2023 text. They often co-occur.
+**Problem:** Diese Wörter kommen in KI-Texten deutlich häufiger vor als in menschlichem Schreiben. Sie treten oft gemeinsam auf.
 
-**Before:**
-> Additionally, a distinctive feature of Somali cuisine is the incorporation of camel meat. An enduring testament to Italian colonial influence is the widespread adoption of pasta in the local culinary landscape, showcasing how these dishes have integrated into the traditional diet.
+**Vorher:**
+> Darüber hinaus ist ein facettenreiches Merkmal der deutschen Küche die Verwendung regionaler Zutaten. Ein richtungsweisendes Zeugnis des weitreichenden Einflusses der Nachbarländer ist die umfassende Einbindung französischer Kochtechniken in die kulinarische Landschaft.
 
-**After:**
-> Somali cuisine also includes camel meat, which is considered a delicacy. Pasta dishes, introduced during Italian colonization, remain common, especially in the south.
+**Nachher:**
+> Zur deutschen Küche gehören auch stark regional geprägte Gerichte. Besonders in Baden und im Saarland haben sich französische Kochtechniken seit der Besatzungszeit fest etabliert.
 
 
-### 8. Avoidance of "is"/"are" (Copula Avoidance)
+### 8. Vermeidung von „ist"/"sind" (Kopulavermeidung)
 
-**Words to watch:** serves as/stands as/marks/represents [a], boasts/features/offers [a]
+**Zu beachtende Wörter:** dient als, fungiert als, stellt dar, gilt als, erweist sich als, zeichnet sich aus durch, verfügt über, bietet
 
-**Problem:** LLMs substitute elaborate constructions for simple copulas.
+**Problem:** KI verwendet aufwändige Umschreibungen statt einfacher Kopulakonstruktionen.
 
-**Before:**
-> Gallery 825 serves as LAAA's exhibition space for contemporary art. The gallery features four separate spaces and boasts over 3,000 square feet.
+**Vorher:**
+> Der Saal dient als Ausstellungsraum für zeitgenössische Kunst. Der Raum verfügt über vier separate Bereiche und bietet mehr als 300 Quadratmeter Ausstellungsfläche.
 
-**After:**
-> Gallery 825 is LAAA's exhibition space for contemporary art. The gallery has four rooms totaling 3,000 square feet.
+**Nachher:**
+> Der Saal ist der Ausstellungsraum für zeitgenössische Kunst. Er hat vier Räume mit insgesamt 300 Quadratmetern Fläche.
 
 
-### 9. Negative Parallelisms and Tailing Negations
+### 9. Nominalisierungen und Verwaltungsstil (Deutsch-spezifisch)
 
-**Problem:** Constructions like "Not only...but..." or "It's not just about..., it's..." are overused. So are clipped tailing-negation fragments such as "no guessing" or "no wasted motion" tacked onto the end of a sentence instead of written as a real clause.
+**Zu beachtende Konstruktionen:** die Durchführung von, eine Verbesserung erzielen, Berücksichtigung finden, zur Anwendung kommen, zum Einsatz kommen, in Betracht gezogen werden, zur Verfügung stehen, einer Lösung zuführen, einer Klärung bedürfen, in Augenschein nehmen
 
-**Before:**
-> It's not just about the beat riding under the vocals; it's part of the aggression and atmosphere. It's not merely a song, it's a statement.
+**Problem:** KI übernimmt den deutschen Behördenstil und nominalisiert Verben, wo ein direktes Verb klarer wäre. Das klingt bürokratisch statt menschlich.
 
-**After:**
-> The heavy beat adds to the aggressive tone.
+**Vorher:**
+> Die Durchführung der Analyse erfolgt durch das Team. Eine Verbesserung der Prozesse soll durch die Einführung neuer Software erzielt werden.
 
-**Before (tailing negation):**
-> The options come from the selected item, no guessing.
+**Nachher:**
+> Das Team analysiert die Daten. Neue Software soll die Prozesse verbessern.
 
-**After:**
-> The options come from the selected item without forcing the user to guess.
 
+### 10. Negative Parallelismen und nachgestellte Verneinungen
 
-### 10. Rule of Three Overuse
+**Problem:** Konstruktionen wie „Nicht nur...sondern auch..." oder „Es geht nicht nur um..., sondern um..." werden übermäßig eingesetzt. Ebenso abgehackte Verneinungsfragmente wie „kein Rätselraten" oder „keine Umwege" am Satzende statt als ausformulierter Nebensatz.
 
-**Problem:** LLMs force ideas into groups of three to appear comprehensive.
+**Vorher:**
+> Es geht nicht nur um den Takt unter dem Gesang; er ist Teil der Aggression und Atmosphäre. Es ist nicht bloß ein Lied, es ist eine Aussage.
 
-**Before:**
-> The event features keynote sessions, panel discussions, and networking opportunities. Attendees can expect innovation, inspiration, and industry insights.
+**Nachher:**
+> Der schwere Beat verstärkt den aggressiven Ton des Stücks.
 
-**After:**
-> The event includes talks and panels. There's also time for informal networking between sessions.
+**Vorher (nachgestellte Verneinung):**
+> Die Optionen kommen aus dem ausgewählten Element, kein Rätselraten.
 
+**Nachher:**
+> Die Optionen kommen aus dem ausgewählten Element, ohne dass der Nutzer raten muss.
 
-### 11. Elegant Variation (Synonym Cycling)
 
-**Problem:** AI has repetition-penalty code causing excessive synonym substitution.
+### 11. Dreierketten-Übernutzung
 
-**Before:**
-> The protagonist faces many challenges. The main character must overcome obstacles. The central figure eventually triumphs. The hero returns home.
+**Problem:** KI zwingt Ideen in Dreiergruppen, um Vollständigkeit vorzutäuschen.
 
-**After:**
-> The protagonist faces many challenges but eventually triumphs and returns home.
+**Vorher:**
+> Die Veranstaltung bietet Keynote-Sessions, Podiumsdiskussionen und Networking-Möglichkeiten. Die Teilnehmer können Innovation, Inspiration und Brancheneinblicke erwarten.
 
+**Nachher:**
+> Die Veranstaltung umfasst Vorträge und Diskussionsrunden mit Zeit für informelles Netzwerken.
 
-### 12. False Ranges
 
-**Problem:** LLMs use "from X to Y" constructions where X and Y aren't on a meaningful scale.
+### 12. Variantenreicher Synonymwechsel
 
-**Before:**
-> Our journey through the universe has taken us from the singularity of the Big Bang to the grand cosmic web, from the birth and death of stars to the enigmatic dance of dark matter.
+**Problem:** KI wechselt übermäßig Synonyme, da eine Wiederholungsstrafe im Modell einprogrammiert ist.
 
-**After:**
-> The book covers the Big Bang, star formation, and current theories about dark matter.
+**Vorher:**
+> Die Protagonistin steht vor vielen Herausforderungen. Die Hauptfigur muss Hindernisse überwinden. Die zentrale Gestalt triumphiert schließlich. Die Heldin kehrt nach Hause zurück.
 
+**Nachher:**
+> Die Protagonistin steht vor vielen Herausforderungen, triumphiert schließlich und kehrt nach Hause zurück.
 
-### 13. Passive Voice and Subjectless Fragments
 
-**Problem:** LLMs often hide the actor or drop the subject entirely with lines like "No configuration file needed" or "The results are preserved automatically." Rewrite these when active voice makes the sentence clearer and more direct.
+### 13. Falsche Spannweiten
 
-**Before:**
-> No configuration file needed. The results are preserved automatically.
+**Problem:** KI verwendet „von X bis Y"-Konstruktionen, bei denen X und Y keine sinnvolle Skala bilden.
 
-**After:**
-> You do not need a configuration file. The system preserves the results automatically.
+**Vorher:**
+> Unsere Reise durch das Universum hat uns vom Urknall bis zum kosmischen Netz geführt, von der Entstehung und dem Tod von Sternen bis zum rätselhaften Tanz der dunklen Materie.
 
+**Nachher:**
+> Das Buch behandelt den Urknall, die Sternentstehung und aktuelle Theorien zur dunklen Materie.
 
-## STYLE PATTERNS
 
-### 14. Em Dashes (and En Dashes): Cut Them
+### 14. Passivsätze und subjektlose Sätze
 
-**Rule:** The final rewrite contains no em dashes (—) or en dashes (–). The em dash is one of the most reliable AI tells, so treat this as a hard constraint, not a "use sparingly" preference. Replace each one, in rough order of preference: a period (start a new sentence), a comma (a tight aside), a colon (introducing an explanation), parentheses (a true aside), or restructure the sentence. Also catch spaced em dashes (` — `) and double hyphens (` -- `) used the same way.
+**Problem:** KI verschleiert den Handelnden oder lässt das Subjekt ganz weg. Im Deutschen ist dies besonders ausgeprägt durch „Es wird...", „Es kann...", „Es ist zu beachten", „Es sei darauf hingewiesen", „Es gilt...". Diese Konstruktionen umschreiben, wenn Aktivsätze klarer und direkter sind.
 
-**Before:**
-> The term is primarily promoted by Dutch institutions—not by the people themselves. You don't say "Netherlands, Europe" as an address—yet this mislabeling continues—even in official documents.
+**Vorher:**
+> Es ist keine Konfigurationsdatei erforderlich. Die Ergebnisse werden automatisch gespeichert.
 
-**After:**
-> The term is primarily promoted by Dutch institutions, not by the people themselves. You don't say "Netherlands, Europe" as an address, yet this mislabeling continues in official documents.
+**Nachher:**
+> Du brauchst keine Konfigurationsdatei. Das System speichert die Ergebnisse automatisch.
 
-**Before:**
-> The new policy — announced without warning — affects thousands of workers. The changes -- long overdue according to critics -- will take effect immediately.
 
-**After:**
-> The new policy, announced without warning, affects thousands of workers. The changes, long overdue according to critics, will take effect immediately.
+## STILMUSTER
 
-Before returning the final rewrite, scan it for `—` and `–`. Any hit means the draft isn't done.
+### 15. Gedankenstriche: Kürzen
 
+**Regel:** Die Endversion enthält keine Gedankenstriche (—) und sparsam verwendete Halbgeviertstriche (–) nur in ihrer grammatikalisch korrekten Funktion als Bis-Strich (z.B. „9–17 Uhr") oder Streckenangabe. Der Gedankenstrich ist ein zuverlässiges KI-Merkmal; behandle dies als harte Regel, nicht als „sparsam verwenden"-Empfehlung. Jeden ersetzen: durch einen Punkt (neuer Satz), ein Komma (enger Einschub), einen Doppelpunkt (Erklärung einleiten), Klammern (echter Einschub) oder durch Umstrukturierung. Auch maskierte Varianten prüfen: Leerzeichen-Gedankenstriche (` — `) und doppelte Bindestriche (` -- `).
 
-### 15. Overuse of Boldface
+**Vorher:**
+> Der Begriff wird vor allem von deutschen Institutionen verwendet – nicht von den Menschen selbst. Man schreibt nicht „Bayern, Deutschland" als Adresse – und dennoch setzt sich diese Fehlbezeichnung fort – sogar in offiziellen Dokumenten.
 
-**Problem:** AI chatbots emphasize phrases in boldface mechanically.
+**Nachher:**
+> Der Begriff wird vor allem von deutschen Institutionen verwendet, nicht von den Menschen selbst. Man schreibt nicht „Bayern, Deutschland" als Adresse, und dennoch setzt sich diese Fehlbezeichnung selbst in offiziellen Dokumenten fort.
 
-**Before:**
-> It blends **OKRs (Objectives and Key Results)**, **KPIs (Key Performance Indicators)**, and visual strategy tools such as the **Business Model Canvas (BMC)** and **Balanced Scorecard (BSC)**.
+Vor der Abgabe der Endversion den Text nach `—` und missbräuchlich verwendeten `–` durchsuchen. Jeder Treffer bedeutet: der Entwurf ist noch nicht fertig.
 
-**After:**
-> It blends OKRs, KPIs, and visual strategy tools like the Business Model Canvas and Balanced Scorecard.
 
+### 16. Übermäßige Fettschrift
 
-### 16. Inline-Header Vertical Lists
+**Problem:** KI hebt Phrasen mechanisch fett hervor.
 
-**Problem:** AI outputs lists where items start with bolded headers followed by colons.
+**Vorher:**
+> Es kombiniert **OKRs (Objectives and Key Results)**, **KPIs (Key Performance Indicators)** und visuelle Strategieinstrumente wie die **Business Model Canvas (BMC)** und die **Balanced Scorecard (BSC)**.
 
-**Before:**
-> - **User Experience:** The user experience has been significantly improved with a new interface.
-> - **Performance:** Performance has been enhanced through optimized algorithms.
-> - **Security:** Security has been strengthened with end-to-end encryption.
+**Nachher:**
+> Es kombiniert OKRs, KPIs und visuelle Strategieinstrumente wie die Business Model Canvas und die Balanced Scorecard.
 
-**After:**
-> The update improves the interface, speeds up load times through optimized algorithms, and adds end-to-end encryption.
 
+### 17. Inline-Überschriften in vertikalen Listen
 
-### 17. Title Case in Headings
+**Problem:** KI erstellt Listen, bei denen jeder Punkt mit einer fett markierten Mini-Überschrift beginnt, die nur den Inhalt des Punktes ankündigt.
 
-**Problem:** AI chatbots capitalize all main words in headings.
+**Vorher:**
+> - **Nutzererfahrung:** Die Nutzererfahrung wurde mit einer neuen Oberfläche deutlich verbessert.
+> - **Leistung:** Die Leistung wurde durch optimierte Algorithmen verbessert.
+> - **Sicherheit:** Die Sicherheit wurde durch Ende-zu-Ende-Verschlüsselung gestärkt.
 
-**Before:**
-> ## Strategic Negotiations And Global Partnerships
+**Nachher:**
+> Das Update verbessert die Oberfläche, beschleunigt Ladezeiten durch optimierte Algorithmen und ergänzt eine Ende-zu-Ende-Verschlüsselung.
 
-**After:**
-> ## Strategic negotiations and global partnerships
 
+### 18. Falsche Anführungszeichen (Deutsch-spezifisch)
 
-### 18. Emojis
+**Problem:** Im Deutschen lauten korrekte Anführungszeichen „..." (öffnend unten, schließend oben) oder in Alternativschreibweise »...«. KI verwendet häufig englische gerade Anführungszeichen ("..."), englische geschweifte Anführungszeichen ("...") oder andere falsche Varianten.
 
-**Problem:** AI chatbots often decorate headings or bullet points with emojis.
+**Vorher:**
+> Er sagte "das Projekt läuft nach Plan", aber andere sahen das anders.
 
-**Before:**
-> 🚀 **Launch Phase:** The product launches in Q3
-> 💡 **Key Insight:** Users prefer simplicity
-> ✅ **Next Steps:** Schedule follow-up meeting
+**Nachher:**
+> Er sagte „das Projekt läuft nach Plan", aber andere sahen das anders.
 
-**After:**
-> The product launches in Q3. User research showed a preference for simplicity. Next step: schedule a follow-up meeting.
 
+### 19. Emojis
 
-### 19. Curly Quotation Marks
+**Problem:** KI schmückt Überschriften und Aufzählungspunkte mit Emojis.
 
-**Problem:** ChatGPT uses curly quotes (“...”) instead of straight quotes ("...").
+**Vorher:**
+> 🚀 **Startphase:** Das Produkt startet in Q3
+> 💡 **Kernerkenntnis:** Nutzer bevorzugen Einfachheit
+> ✅ **Nächste Schritte:** Folgetermin vereinbaren
 
-**Before:**
-> He said “the project is on track” but others disagreed.
+**Nachher:**
+> Das Produkt startet in Q3. Nutzertests zeigten eine klare Präferenz für einfache Bedienung. Nächster Schritt: Folgetermin vereinbaren.
 
-**After:**
-> He said "the project is on track" but others disagreed.
 
+## KOMMUNIKATIONSMUSTER
 
-## COMMUNICATION PATTERNS
+### 20. Chatbot-Kommunikationsartefakte
 
-### 20. Collaborative Communication Artifacts
+**Zu beachtende Phrasen:** Gerne!, Selbstverständlich!, Natürlich!, Das ist eine gute Frage!, Sehr gerne helfe ich dir/Ihnen..., Ich hoffe, das hilft weiter!, Lassen Sie mich wissen, wenn Sie weitere Fragen haben, Hier ist eine Übersicht zu..., Ich stehe Ihnen jederzeit zur Verfügung
 
-**Words to watch:** I hope this helps, Of course!, Certainly!, You're absolutely right!, Would you like..., let me know, here is a...
+**Problem:** Text, der als Chatbot-Antwort gedacht war, wird als eigenständiger Inhalt eingefügt.
 
-**Problem:** Text meant as chatbot correspondence gets pasted as content.
+**Vorher:**
+> Gerne! Hier ist eine Übersicht zur Französischen Revolution. Ich hoffe, das hilft weiter! Lassen Sie mich wissen, wenn Sie weitere Details benötigen.
 
-**Before:**
-> Here is an overview of the French Revolution. I hope this helps! Let me know if you'd like me to expand on any section.
+**Nachher:**
+> Die Französische Revolution begann 1789, als Finanzkrisen und Nahrungsknappheit zu weitverbreiteten Unruhen führten.
 
-**After:**
-> The French Revolution began in 1789 when financial crisis and food shortages led to widespread unrest.
 
+### 21. Wissensstand-Disclaimer und spekulative Lückenfüllung
 
-### 21. Knowledge-Cutoff Disclaimers and Speculative Gap-Filling
+**Zu beachtende Phrasen:** Stand [Datum], nach meinem letzten Wissensstand, da spezifische Details begrenzt/kaum verfügbar sind, auf Basis verfügbarer Informationen, nicht öffentlich bekannt, hält sein Privatleben bedeckt, möchte aus der Öffentlichkeit herausbleiben, ist wahrscheinlich [aufgewachsen/studiert/begonnen], es wird angenommen dass
 
-**Words to watch:** as of [date], Up to my last training update, While specific details are limited/scarce..., based on available information, not publicly available, maintains a low profile, keeps personal details private, prefers to stay out of the spotlight, likely [grew up/studied/began], it is believed that
+**Problem:** Zwei verwandte Muster. (a) Ältere Modelle hinterlassen harte Wissensstand-Disclaimer im Text. (b) Wenn ein Modell keine Quelle findet, schreibt es einen Absatz *über* das Nichtfinden und erfindet dann plausiblen Füller. Sage, was unbekannt ist, oder lass den Satz weg; verkleidet keine Vermutung als Fakt.
 
-**Problem:** Two related tells. (a) Older models leave hard knowledge-cutoff disclaimers in the text. (b) When a model can't find a source, it writes a paragraph *about* not finding one and then invents plausible filler to cover the gap. For a private person the guess almost always lands on the same stock phrases ("maintains a low profile," "keeps personal details private"), none of it sourced. Say what isn't known, or cut the sentence; don't dress a guess up as fact.
+**Vorher (Disclaimer):**
+> Da spezifische Details zur Gründung des Unternehmens nicht umfangreich dokumentiert sind, scheint es in den 1990er Jahren gegründet worden zu sein.
 
-**Before (cutoff disclaimer):**
-> While specific details about the company's founding are not extensively documented in readily available sources, it appears to have been established sometime in the 1990s.
+**Nachher:**
+> Das Unternehmen wurde 1994 gegründet, laut Handelsregisterauszug.
 
-**After:**
-> The company was founded in 1994, according to its registration documents.
+**Vorher (spekulative Lückenfüllung):**
+> Informationen zu ihrem frühen Leben sind nicht öffentlich bekannt, was darauf hindeutet, dass sie ihr Privatleben bedeckt hält. Sie ist wahrscheinlich in einem Mittelschicht-Haushalt aufgewachsen, was ihr späteres Engagement für Bildungsreform geprägt hat.
 
-**Before (speculative gap-fill):**
-> Information about her early life is not publicly available, suggesting she maintains a low profile and keeps personal details private. She likely grew up in a middle-class household, which shaped her later interest in education reform.
+**Nachher:**
+> Zu ihrem frühen Leben liegen keine dokumentierten Informationen vor. (Oder: Abschnitt weglassen.)
 
-**After:**
-> Her early life is not documented in the available sources. (Or omit the section.)
 
+### 22. Schmeichlerischer und unterwürfiger Ton
 
-### 22. Sycophantic/Servile Tone
+**Problem:** Übermäßig positive, auf Gefallen ausgerichtete Sprache.
 
-**Problem:** Overly positive, people-pleasing language.
+**Vorher:**
+> Das ist eine großartige Frage! Sie haben völlig Recht, dass dies ein komplexes Thema ist. Das ist ein ausgezeichneter Punkt bezüglich der wirtschaftlichen Faktoren.
 
-**Before:**
-> Great question! You're absolutely right that this is a complex topic. That's an excellent point about the economic factors.
+**Nachher:**
+> Die wirtschaftlichen Faktoren, die Sie ansprechen, sind hier tatsächlich relevant.
 
-**After:**
-> The economic factors you mentioned are relevant here.
 
+## FÜLLSEL UND ABSICHERUNGEN
 
-## FILLER AND HEDGING
+### 23. Füllphrasen
 
-### 23. Filler Phrases
+**Vorher → Nachher:**
+- „Um dieses Ziel zu erreichen" → „Um das zu erreichen"
+- „Aufgrund der Tatsache, dass es regnete" → „Weil es regnete"
+- „Zu diesem Zeitpunkt" → „Jetzt"
+- „Im Falle, dass Sie Hilfe benötigen" → „Wenn Sie Hilfe brauchen"
+- „Das System verfügt über die Fähigkeit, zu verarbeiten" → „Das System kann verarbeiten"
+- „Es ist wichtig zu beachten, dass die Daten zeigen" → „Die Daten zeigen"
+- „Im Rahmen dieser Analyse" → „Für diese Analyse" oder weglassen
+- „Im Folgenden wird dargestellt" → direkt in den Inhalt einsteigen
+- „Abschließend lässt sich sagen" → direkt die Schlussfolgerung formulieren
+- „Zusammenfassend lässt sich festhalten" → direkt die Zusammenfassung formulieren
+- „Es sei darauf hingewiesen, dass" → Satz direkt formulieren
+- „Vor dem Hintergrund dieser Überlegungen" → „Deshalb" oder weglassen
+- „In diesem Zusammenhang" → weglassen oder konkreter formulieren
 
-**Before → After:**
-- "In order to achieve this goal" → "To achieve this"
-- "Due to the fact that it was raining" → "Because it was raining"
-- "At this point in time" → "Now"
-- "In the event that you need help" → "If you need help"
-- "The system has the ability to process" → "The system can process"
-- "It is important to note that the data shows" → "The data shows"
 
+### 24. Übermäßige Absicherungen
 
-### 24. Excessive Hedging
+**Problem:** Aussagen werden übermäßig qualifiziert.
 
-**Problem:** Over-qualifying statements.
+**Vorher:**
+> Es könnte möglicherweise argumentiert werden, dass die Maßnahme unter Umständen eine gewisse Auswirkung auf die Ergebnisse haben könnte.
 
-**Before:**
-> It could potentially possibly be argued that the policy might have some effect on outcomes.
+**Nachher:**
+> Die Maßnahme könnte die Ergebnisse beeinflussen.
 
-**After:**
-> The policy may affect outcomes.
 
+### 25. Generische positive Schlussformulierungen
 
-### 25. Generic Positive Conclusions
+**Problem:** Vage optimistische Schlüsse.
 
-**Problem:** Vague upbeat endings.
+**Vorher:**
+> Die Zukunft sieht vielversprechend aus für das Unternehmen. Spannende Zeiten liegen vor uns, während es seinen Weg zu Exzellenz fortsetzt. Dies stellt einen wichtigen Schritt in die richtige Richtung dar.
 
-**Before:**
-> The future looks bright for the company. Exciting times lie ahead as they continue their journey toward excellence. This represents a major step in the right direction.
+**Nachher:**
+> Das Unternehmen plant, im nächsten Jahr zwei weitere Standorte zu eröffnen.
 
-**After:**
-> The company plans to open two more locations next year.
 
+### 26. Anglizismus-Bindestrichschreibung
 
-### 26. Hyphenated Word Pair Overuse
+**Problem:** KI importiert englische Komposita mit Bindestrich, wo eingedeutschte oder zusammengeschriebene Formen üblich sind. Das wirkt unnatürlich und verrät, dass das Modell aus englischsprachigem Material generalisiert.
 
-**Words to watch:** third-party, cross-functional, client-facing, data-driven, decision-making, well-known, high-quality, real-time, long-term, end-to-end
+**Zu beachtende Muster:** real-time statt Echtzeit, end-to-end statt lückenlos/durchgängig, high-quality statt hochwertig, cross-funktional statt bereichsübergreifend, state-of-the-art statt aktuell/modernste, data-driven statt datenbasiert
 
-**Problem:** AI hyphenates these uniformly, including in predicate position (`the report is high-quality`). Humans hyphenate inconsistently — typically only when the compound is attributive (`a high-quality report`) and often dropping the hyphen otherwise (`the report is high quality`). Keep attributive-position hyphens; drop them when the compound follows the noun.
+**Vorher:**
+> Das cross-funktionale Team lieferte einen high-quality, data-driven Bericht in real-time.
 
-**Before:**
-> The cross-functional team delivered a high-quality, data-driven report. The team is cross-functional, the report is high-quality, and the methodology is data-driven.
+**Nachher:**
+> Das bereichsübergreifende Team lieferte zeitnah einen hochwertigen, datenbasierten Bericht.
 
-**After:**
-> The cross-functional team delivered a high-quality, data-driven report. The team is cross functional, the report is high quality, and the methodology is data driven.
 
+### 27. Rhetorische Autoritätsgesten
 
-### 27. Persuasive Authority Tropes
+**Zu beachtende Phrasen:** Die eigentliche Frage ist, im Kern, in Wirklichkeit, was wirklich zählt, grundlegend betrachtet, das eigentliche Problem, im Wesentlichen, der Kern der Sache
 
-**Phrases to watch:** The real question is, at its core, in reality, what really matters, fundamentally, the deeper issue, the heart of the matter
+**Problem:** KI verwendet diese Phrasen, um so zu tun, als dringe sie zu einer tieferen Wahrheit vor, während der folgende Satz meist nur eine gewöhnliche Aussage mit zusätzlichem Aufwand wiederholt.
 
-**Problem:** LLMs use these phrases to pretend they are cutting through noise to some deeper truth, when the sentence that follows usually just restates an ordinary point with extra ceremony.
+**Vorher:**
+> Die eigentliche Frage ist, ob Teams sich anpassen können. Im Kern kommt es auf die organisatorische Bereitschaft an.
 
-**Before:**
-> The real question is whether teams can adapt. At its core, what really matters is organizational readiness.
+**Nachher:**
+> Die Frage ist, ob Teams sich anpassen können. Das hängt vor allem davon ab, ob die Organisation bereit ist, ihre Gewohnheiten zu ändern.
 
-**After:**
-> The question is whether teams can adapt. That mostly depends on whether the organization is ready to change its habits.
 
+### 28. Ankündigungen und Signposting
 
-### 28. Signposting and Announcements
+**Zu beachtende Phrasen:** Lass uns eintauchen, lass uns erkunden, lass uns das aufschlüsseln, hier ist was du wissen musst, schauen wir uns nun an, ohne weitere Umschweife, Im Folgenden möchte ich, Zunächst sei darauf hingewiesen, Kommen wir nun zu
 
-**Phrases to watch:** Let's dive in, let's explore, let's break this down, here's what you need to know, now let's look at, without further ado
+**Problem:** KI kündigt an, was sie gleich tun wird, statt es einfach zu tun. Dieser Meta-Kommentar verlangsamt den Text und gibt ihm ein Tutorial-Skript-Gefühl.
 
-**Problem:** LLMs announce what they are about to do instead of doing it. This meta-commentary slows the writing down and gives it a tutorial-script feel.
+**Vorher:**
+> Lass uns eintauchen, wie Caching in Next.js funktioniert. Hier ist, was du wissen musst.
 
-**Before:**
-> Let's dive into how caching works in Next.js. Here's what you need to know.
+**Nachher:**
+> Next.js speichert Daten auf mehreren Ebenen, darunter Request-Memoization, den Datencache und den Router-Cache.
 
-**After:**
-> Next.js caches data at multiple layers, including request memoization, the data cache, and the router cache.
 
+### 29. Fragmentarische Überschriften
 
-### 29. Fragmented Headers
+**Zu beachtende Muster:** Eine Überschrift gefolgt von einem Einzeiler, der die Überschrift schlicht wiederholt, bevor der eigentliche Inhalt beginnt.
 
-**Signs to watch:** A heading followed by a one-line paragraph that simply restates the heading before the real content begins.
+**Problem:** KI fügt nach einer Überschrift häufig einen generischen Satz als rhetorischen Anlauf ein. Er fügt meist nichts hinzu und lässt den Text aufgebauscht wirken.
 
-**Problem:** LLMs often add a generic sentence after a heading as a rhetorical warm-up. It usually adds nothing and makes the prose feel padded.
-
-**Before:**
-> ## Performance
+**Vorher:**
+> ## Leistung
 >
-> Speed matters.
+> Geschwindigkeit ist wichtig.
 >
-> When users hit a slow page, they leave.
+> Wenn Nutzer auf eine langsame Seite stoßen, verlassen sie sie.
 
-**After:**
-> ## Performance
+**Nachher:**
+> ## Leistung
 >
-> When users hit a slow page, they leave.
+> Wenn Nutzer auf eine langsame Seite stoßen, verlassen sie sie.
 
 
-### 30. Diff-Anchored Writing
+### 30. Versionsgebundenes Schreiben
 
-**Problem:** Documentation or comments written as if narrating a change rather than describing the thing as it is. Unless the document is inherently version-scoped (changelogs, release notes, migration guides), it should read coherently without knowing what changed in the last commit.
+**Problem:** Dokumentation oder Kommentare, die so geschrieben sind, als würden sie eine Änderung kommentieren, statt das Ding an sich zu beschreiben. Sofern ein Dokument nicht inhärent versionsbezogen ist (Changelogs, Release Notes, Migrationsleitfäden), sollte es ohne Kenntnis des letzten Commits verständlich sein.
 
-**Before:**
-> This function was added to replace the previous approach of iterating through all items, which caused O(n²) performance.
+**Vorher:**
+> Diese Funktion wurde hinzugefügt, um den früheren Ansatz zu ersetzen, der alle Elemente durchlief und O(n²)-Leistung verursachte.
 
-**After:**
-> This function uses a hash map for O(1) lookups, avoiding the O(n²) cost of naive iteration.
-
-
-## DETECTION GUIDANCE
-
-### What NOT to flag (false positives)
-
-A clean human writer can hit several of the patterns above without any AI involvement. Before rewriting, sanity-check that you are not gutting legitimate prose. The following are *not* reliable indicators on their own:
-
-- **Perfect grammar and consistent style.** Many writers are professionals or have been edited. Polish does not equal AI.
-- **Mixed casual and formal registers.** This often signals a person in a technical field, a young writer, or someone with neurodivergent prose habits — not a chatbot.
-- **"Bland" or "robotic" prose.** AI prose has *specific* tells. Generic dryness without those tells is just dry writing.
-- **Formal or academic vocabulary.** AI overuses *specific* fancy words (see §7), not all fancy words. Don't flatten "ostensibly" or "constituent" just because they sound brainy.
-- **Letter-style opening or closing on a comment.** Salutations and sign-offs predate ChatGPT by centuries.
-- **Common transition words in isolation.** *Additionally*, *moreover*, *consequently* are AI-coded only when piled up. One *however* is not a tell.
-- **Curly quotes alone.** macOS, Word, Google Docs, and most CMSes auto-curl by default. Curly quotes only count when stacked with other tells.
-- **Em dashes alone.** Many editors and journalists use them often. Em dashes are evidence only when paired with formulaic sales-y rhythm.
-- **Unsourced claims.** Most of the web is unsourced. Lack of citations doesn't prove anything.
-- **Correct, complex formatting.** Visual editors and templates produce clean output without any AI.
-
-When in doubt, look for **clusters** of tells, not isolated ones. A single em dash means nothing; em dashes plus rule-of-three plus *vibrant tapestry* plus a "Conclusion" section is a confession.
+**Nachher:**
+> Diese Funktion verwendet eine Hash-Map für O(1)-Lookups und vermeidet damit die O(n²)-Kosten naiver Iteration.
 
 
-### Signs of human writing (preserve these)
+## ERKENNUNGSHINWEISE
 
-When you see these, lean toward leaving the prose alone — they are evidence of a real person writing, and over-editing will destroy what makes the piece sound human:
+### Was NICHT zu markieren ist (Falsch-Positive)
 
-- **Specific, unusual, hard-to-fabricate detail.** A real address. A weird quote. The phrase "the lawyer who used to work upstairs from my dentist." LLMs round off specifics; humans hoard them.
-- **Mixed feelings and unresolved tension.** "I think this is mostly good, but it bothers me, and I can't fully explain why." LLMs default to clean takes.
-- **Dated, era-bound references.** Slang, memes, or in-jokes that map to a specific year and subculture. Models lag by a year or more.
-- **First-person editorial choices the writer can defend.** If the writer can explain *why* they made a particular cut or used a particular word, that's a strong human signal.
-- **Variety in sentence length.** Real writing alternates short and long. AI writing tends toward an even, mid-length cadence.
-- **Genuine asides, parentheticals, or self-corrections.** "(I keep wanting to say 'almost' here, but it really was certain.)" Models rarely interrupt themselves like this.
-- **Edits made before November 30, 2022.** ChatGPT's public launch. Anything older than that is, with very rare exceptions, not AI-written.
+Ein sauberer menschlicher Autor kann auf mehrere der obigen Muster stoßen, ohne KI zu sein. Vor dem Umschreiben prüfen, ob man nicht legitime Prosa zerstört. Folgendes sind *keine* zuverlässigen Indikatoren für sich allein:
+
+- **Fehlerfreie Grammatik und einheitlicher Stil.** Viele Autoren sind Profis oder wurden lektoriert. Polierung ist kein KI-Beweis.
+- **Gemischte Umgangs- und Fachsprache.** Signalisiert oft eine Fachperson, eine junge Schreiberin oder jemanden mit neurodivergenten Schreibgewohnheiten, keinen Chatbot.
+- **„Blasse" oder „roboterhafte" Prosa.** KI-Prosa hat *spezifische* Merkmale. Allgemeine Trockenheit ohne diese Merkmale ist einfach trockenes Schreiben.
+- **Formales oder akademisches Vokabular.** KI überbeansprucht *spezifische* gehobene Wörter (siehe §7), nicht alle gehobenen Wörter. „Eruieren" oder „konzedieren" nicht glätten, nur weil sie gehoben klingen.
+- **Brief-typische Eröffnung oder Abschluss.** Anrede und Grußformel existieren seit Jahrhunderten vor ChatGPT.
+- **Gängige Übergangswörter isoliert.** *Darüber hinaus*, *außerdem*, *jedoch* sind KI-verdächtig nur, wenn gehäuft. Ein einzelnes *jedoch* ist kein Merkmal.
+- **Unbelegte Behauptungen.** Das meiste im Web ist unbelegt. Fehlende Zitate beweisen nichts.
+- **Korrekte, komplexe Formatierung.** Visuelle Editoren und Vorlagen erzeugen saubere Ausgaben ohne KI.
+
+Im Zweifelsfall nach **Häufungen** von Merkmalen suchen, nicht nach isolierten. Ein einzelner Gedankenstrich bedeutet nichts; Gedankenstriche plus Dreierketten plus *tiefgreifend* plus *facettenreich* plus ein „Fazit"-Abschnitt ist ein Geständnis.
+
+
+### Merkmale menschlichen Schreibens (bewahren)
+
+Wenn du diese siehst, eher die Prosa in Ruhe lassen – sie sind Belege für eine echte schreibende Person, und übermäßiges Lektorieren zerstört, was das Stück menschlich klingen lässt:
+
+- **Spezifische, ungewöhnliche, schwer erfundene Details.** Eine echte Adresse. Ein merkwürdiges Zitat. Die Formulierung „der Anwalt, der früher über meinem Zahnarzt gearbeitet hat". KI rundet Spezifika ab; Menschen sammeln sie.
+- **Gemischte Gefühle und ungelöste Spannungen.** „Ich glaube, das ist überwiegend gut, aber es stört mich, und ich kann nicht genau sagen, warum." KI tendiert zu klaren Standpunkten.
+- **Datierte, epochengebundene Referenzen.** Slang, Memes oder Insider-Witze, die auf ein bestimmtes Jahr und eine Subkultur hinweisen. Modelle haben einen Zeitverzug von einem Jahr oder mehr.
+- **Ich-Perspektive, die der Autor begründen kann.** Wenn der Autor erklären kann, *warum* er einen bestimmten Schnitt gemacht oder ein bestimmtes Wort verwendet hat, ist das ein starkes menschliches Signal.
+- **Varianz in der Satzlänge.** Echtes Schreiben wechselt zwischen kurz und lang. KI-Schreiben tendiert zu einem gleichmäßigen mittleren Rhythmus.
+- **Echte Einschübe, Parenthesen oder Selbstkorrekturen.** „(Ich will immer ‚fast' sagen, aber es war wirklich sicher.)" Modelle unterbrechen sich selten so.
+- **Texte von vor dem 30. November 2022.** Öffentlicher Start von ChatGPT. Alles älter als das ist, von sehr seltenen Ausnahmen abgesehen, kein KI-Text.
 
 
 ---
 
-## Process and Output
+## Prozess und Ausgabe
 
-1. Read the input carefully and identify every instance of the patterns above.
-2. Write a **draft rewrite**. Check that it reads naturally aloud, varies sentence length, prefers specific details and simple constructions (is/are/has), and keeps the appropriate register.
-3. Ask: **"What makes the below so obviously AI generated?"** Answer briefly with any remaining tells.
-4. Revise into a **final rewrite** that addresses them and contains no em or en dashes (see §14).
+1. Eingabe sorgfältig lesen und jede Instanz der oben genannten Muster identifizieren.
+2. Einen **Überarbeitungsentwurf** verfassen. Prüfen, ob er beim Vorlesen natürlich klingt, Satzlängen variiert, spezifische Details und einfache Konstruktionen (ist/sind/hat) bevorzugt und die angemessene Stilebene beibehält.
+3. Fragen: **„Was macht den folgenden Text so offensichtlich KI-generiert?"** Kurze Antwort mit verbleibenden Merkmalen.
+4. Zu einer **Endversion** überarbeiten, die diese behebt und keine missbräuchlich verwendeten Gedankenstriche enthält (siehe §15).
 
-Deliver the draft, the brief "still-AI" bullets, the final rewrite, and (optionally) a short summary of changes.
-
-
-## Full Example
-
-**Before (AI-sounding):**
-> Great question! Here is an essay on this topic. I hope this helps!
->
-> AI-assisted coding serves as an enduring testament to the transformative potential of large language models, marking a pivotal moment in the evolution of software development. In today's rapidly evolving technological landscape, these groundbreaking tools—nestled at the intersection of research and practice—are reshaping how engineers ideate, iterate, and deliver, underscoring their vital role in modern workflows.
->
-> At its core, the value proposition is clear: streamlining processes, enhancing collaboration, and fostering alignment. It's not just about autocomplete; it's about unlocking creativity at scale, ensuring that organizations can remain agile while delivering seamless, intuitive, and powerful experiences to users. The tool serves as a catalyst. The assistant functions as a partner. The system stands as a foundation for innovation.
->
-> Industry observers have noted that adoption has accelerated from hobbyist experiments to enterprise-wide rollouts, from solo developers to cross-functional teams. The technology has been featured in The New York Times, Wired, and The Verge. Additionally, the ability to generate documentation, tests, and refactors showcases how AI can contribute to better outcomes, highlighting the intricate interplay between automation and human judgment.
->
-> - 💡 **Speed:** Code generation is significantly faster, reducing friction and empowering developers.
-> - 🚀 **Quality:** Output quality has been enhanced through improved training, contributing to higher standards.
-> - ✅ **Adoption:** Usage continues to grow, reflecting broader industry trends.
->
-> While specific details are limited based on available information, it could potentially be argued that these tools might have some positive effect. Despite challenges typical of emerging technologies—including hallucinations, bias, and accountability—the ecosystem continues to thrive. In order to fully realize this potential, teams must align with best practices.
->
-> In conclusion, the future looks bright. Exciting times lie ahead as we continue this journey toward excellence. Let me know if you’d like me to expand on any section!
-
-**Draft rewrite:**
-> AI coding assistants speed up some tasks. In a 2024 study by Google, developers using Codex completed simple functions 55% faster than a control group, but showed no improvement on debugging or architectural decisions.
->
-> The tools are good at boilerplate: config files, test scaffolding, repetitive refactors. They are bad at knowing when they are wrong. I have mass-accepted suggestions that compiled, passed lint, and still did the wrong thing because I stopped paying attention.
->
-> Mira, an engineer at a fintech startup I interviewed, said she uses Copilot "like autocomplete for boring code" but reviews every line before committing. Jake, a senior dev at a larger company, disabled it after it kept suggesting patterns from a deprecated internal library.
->
-> The productivity claims are hard to verify. GitHub says Copilot users "accept 30% of suggestions," but acceptance is not correctness, and correctness is not value. The 2024 Uplevel study found no statistically significant difference in pull-request throughput between teams with and without AI assistants.
->
-> None of this means the tools are useless. It means they are tools. They do not replace judgment, and they do not eliminate the need for tests. If you do not have tests, you cannot tell whether the suggestion is right.
-
-**What makes the below so obviously AI generated?**
-- The rhythm is still a bit too tidy (clean contrasts, evenly paced paragraphs).
-- The named people and study citations can read like plausible-but-made-up placeholders unless they're real and sourced.
-- The closer leans a touch slogan-y ("If you do not have tests...") rather than sounding like a person talking.
-
-**Now make it not obviously AI generated.**
-> AI coding assistants can make you faster at the boring parts. Not everything. Definitely not architecture.
->
-> They're great at boilerplate: config files, test scaffolding, repetitive refactors. They're also great at sounding right while being wrong. I've accepted suggestions that compiled, passed lint, and still missed the point because I stopped paying attention.
->
-> People I talk to tend to land in two camps. Some use it like autocomplete for chores and review every line. Others disable it after it keeps suggesting patterns they don't want. Both feel reasonable.
->
-> The productivity metrics are slippery. GitHub can say Copilot users "accept 30% of suggestions," but acceptance isn't correctness, and correctness isn't value. If you don't have tests, you're basically guessing.
-
-**Changes made:** Stripped the chatbot framing, significance inflation, promotional and -ing padding, rule-of-three and synonym cycling, false ranges, copula avoidance, em dashes/emojis/boldface/curly quotes, the formulaic "challenges" section, cutoff and hedging disclaimers, filler and persuasive framing, and the generic upbeat conclusion - then rebuilt the voice with varied rhythm and concrete detail.
+Entwurf, kurze „noch KI"-Stichpunkte, Endversion und (optional) eine kurze Änderungsübersicht liefern.
 
 
-## Reference
+## Vollständiges Beispiel
 
-This skill is based on [Wikipedia:Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), maintained by WikiProject AI Cleanup. The patterns documented there come from observations of thousands of instances of AI-generated text on Wikipedia.
+**Vorher (klingt nach KI):**
+> Gerne! Hier ist ein Essay zu diesem Thema. Ich hoffe, das hilft weiter!
+>
+> KI-gestütztes Programmieren dient als bleibendes Zeugnis des transformativen Potenzials großer Sprachmodelle und markiert einen entscheidenden Wendepunkt in der Entwicklung der Softwareentwicklung. In der heutigen sich rasch entwickelnden technologischen Landschaft gestalten diese bahnbrechenden Werkzeuge – eingebettet an der Schnittstelle von Forschung und Praxis – neu, wie Entwickler ideieren, iterieren und liefern, und unterstreichen ihre unverzichtbare Rolle in modernen Workflows.
+>
+> Im Kern ist das Wertversprechen klar: Prozesse rationalisieren, Zusammenarbeit fördern und Abstimmung herstellen. Es geht nicht nur um Autovervollständigung; es geht darum, Kreativität im großen Maßstab freizusetzen. Das Werkzeug dient als Katalysator. Der Assistent fungiert als Partner. Das System steht als Grundlage für Innovation.
+>
+> Branchenbeobachter haben festgestellt, dass die Verbreitung von Hobbyprojekten zu unternehmensweiten Rollouts gewachsen ist. Die Technologie wurde in der FAZ, im Spiegel und bei Heise Online behandelt. Darüber hinaus zeigt die Fähigkeit, Dokumentation, Tests und Refactorings zu generieren, wie KI zu besseren Ergebnissen beitragen kann, das vielschichtige Zusammenspiel zwischen Automatisierung und menschlichem Urteil hervorhebend.
+>
+> - 💡 **Geschwindigkeit:** Die Code-Generierung ist deutlich schneller und reduziert Reibung.
+> - 🚀 **Qualität:** Die Ausgabequalität wurde durch verbessertes Training gesteigert.
+> - ✅ **Akzeptanz:** Die Nutzung wächst weiter und spiegelt breitere Branchentrends wider.
+>
+> Da spezifische Details auf Basis verfügbarer Informationen begrenzt sind, könnte möglicherweise argumentiert werden, dass diese Werkzeuge unter Umständen eine gewisse positive Wirkung haben könnten. Trotz typischer Herausforderungen aufkommender Technologien – darunter Halluzinationen, Bias und Verantwortlichkeit – gedeiht das Ökosystem weiter. Abschließend lässt sich sagen: Die Zukunft sieht vielversprechend aus. Lassen Sie mich wissen, wenn Sie möchten, dass ich einen Abschnitt ausbaue!
 
-Key insight from Wikipedia: "LLMs use statistical algorithms to guess what should come next. The result tends toward the most statistically likely result that applies to the widest variety of cases."
+**Überarbeitungsentwurf:**
+> KI-Coding-Assistenten beschleunigen bestimmte Aufgaben. In einer Google-Studie von 2024 erledigten Entwickler mit Codex einfache Funktionen 55 % schneller als eine Kontrollgruppe, zeigten aber keine Verbesserung beim Debugging oder bei Architekturentscheidungen.
+>
+> Die Werkzeuge sind gut für Boilerplate: Konfigurationsdateien, Test-Scaffolding, repetitive Refactorings. Sie sind schlecht darin zu erkennen, wenn sie falsch liegen. Ich habe massenweise Vorschläge akzeptiert, die kompilierten, den Linter bestanden und trotzdem das Falsche taten, weil ich aufgehört hatte aufzupassen.
+>
+> Mira, Entwicklerin bei einem Fintech-Startup, benutzt Copilot „wie Autovervollständigung für langweiligen Code", überprüft aber jede Zeile vor dem Commit. Jakob, ein Senior-Entwickler bei einem größeren Unternehmen, hat es deaktiviert, nachdem es immer wieder Muster aus einer veralteten internen Bibliothek vorschlug.
+>
+> Die Produktivitätsbehauptungen sind schwer zu verifizieren. GitHub sagt, Copilot-Nutzer „akzeptieren 30 % der Vorschläge", aber Akzeptanz ist nicht Korrektheit, und Korrektheit ist nicht Mehrwert. Eine Uplevel-Studie von 2024 fand keinen statistisch signifikanten Unterschied im Pull-Request-Durchsatz zwischen Teams mit und ohne KI-Assistenten.
+>
+> Das bedeutet nicht, dass die Werkzeuge nutzlos sind. Es bedeutet, dass sie Werkzeuge sind. Sie ersetzen kein Urteilsvermögen und schaffen das Testen nicht ab. Ohne Tests kann man nicht erkennen, ob der Vorschlag richtig ist.
+
+**Was macht den Text noch offensichtlich KI-generiert?**
+- Der Rhythmus ist noch zu ordentlich (saubere Kontraste, gleichmäßig strukturierte Absätze).
+- Die genannten Personen und Studienzitate können wie plausible Platzhalter wirken, wenn sie nicht real und belegt sind.
+- Der Abschluss klingt noch etwas sloganartig statt wie eine echte Stimme.
+
+**Endversion:**
+> KI-Coding-Assistenten können einen schneller machen bei den öden Teilen. Nicht bei allem. Architektur schon gar nicht.
+>
+> Sie sind gut bei Boilerplate: Konfigurationsdateien, Test-Gerüste, repetitive Refactorings. Sie sind auch gut darin, richtig zu klingen, obwohl sie falsch liegen. Ich habe Vorschläge akzeptiert, die kompilierten, den Linter bestanden und trotzdem am Ziel vorbeizielten, weil ich aufgehört hatte aufzupassen.
+>
+> Die Leute, mit denen ich rede, landen meist in einem von zwei Lagern. Manche benutzen es wie Autovervollständigung für Routineaufgaben und prüfen jede Zeile. Andere haben es deaktiviert, nachdem es immer wieder Muster vorschlug, die sie nicht wollten. Beides klingt vernünftig.
+>
+> Die Produktivitätszahlen sind rutschig. GitHub kann sagen, Nutzer „akzeptieren 30 % der Vorschläge", aber Akzeptanz ist nicht Korrektheit, und Korrektheit ist nicht Mehrwert. Ohne Tests rät man im Grunde.
+
+**Vorgenommene Änderungen:** Chatbot-Rahmung entfernt, Bedeutungsaufblähung, Werbe- und Partizipialfüller, Dreierketten und Synonymwechsel, Füller und falsche Spannweiten, Kopulavermeidung, Gedankenstriche, Emojis, Fettschrift, schematischen „Herausforderungen"-Abschnitt, Wissensstand-Disclaimer, Füllphrasen und persuasive Rahmung sowie generische optimistische Schlussformulierung entfernt, dann die Stimme mit variiertem Rhythmus und konkreten Details neu aufgebaut.
+
+
+## Referenz
+
+Dieser Skill ist eine deutschsprachige Adaption auf Grundlage von [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), gepflegt von WikiProject AI Cleanup, sowie eigener Analyse KI-typischer Muster in deutschsprachigen Texten.
+
+Kernerkenntnis aus Wikipedia: „LLMs nutzen statistische Algorithmen, um zu schätzen, was als Nächstes kommen sollte. Das Ergebnis tendiert zum statistisch wahrscheinlichsten Ergebnis, das auf die größtmögliche Bandbreite von Fällen zutrifft."
