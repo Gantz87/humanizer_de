@@ -1,7 +1,3 @@
-Hier ist die deutsche Übersetzung des Dokuments. Die Code-Blöcke, Befehle und Tabellenstrukturen wurden dabei im Originalformat beibehalten.
-
----
-
 # Humanizer DE
 
 Ein Skill für Claude Code und OpenCode, der typische Anzeichen von KI-generierten Texten entfernt, damit diese natürlicher und menschlicher klingen. Jetzt auch für deutsche Texte.
